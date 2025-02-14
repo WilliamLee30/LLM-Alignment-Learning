@@ -67,6 +67,7 @@ def preference_loss(policy_chosen_logps: torch.FloatTensor,
         The losses tensor contains the DPO loss for each example in the batch.
         The chosen_rewards and rejected_rewards tensors contain the rewards for the chosen and rejected responses, respectively.
     """
+    # Calculating loss
     pi_logratios = policy_chosen_logps - policy_rejected_logps
     ref_logratios = reference_chosen_logps - reference_rejected_logps
 
@@ -78,9 +79,11 @@ def preference_loss(policy_chosen_logps: torch.FloatTensor,
     if ipo:
         losses = (logits - 1/(2 * beta)) ** 2  # Eq. 17 of https://arxiv.org/pdf/2310.12036v2.pdf
     else:
+        # TODO:DPO loss
         # Eq. 3 https://ericmitchell.ai/cdpo.pdf; label_smoothing=0 gives original DPO (Eq. 7 of https://arxiv.org/pdf/2305.18290.pdf)
         losses = -F.logsigmoid(beta * logits) * (1 - label_smoothing) - F.logsigmoid(-beta * logits) * label_smoothing
 
+    # Calculateing rewards: implicitly defined in equation 5 of the DPO offical paper
     chosen_rewards = beta * (policy_chosen_logps - reference_chosen_logps).detach()
     rejected_rewards = beta * (policy_rejected_logps - reference_rejected_logps).detach()
 
@@ -175,6 +178,7 @@ class BasicTrainer(object):
         self.policy = policy
         self.reference_model = reference_model
 
+        # TODO:Data preparation 
         self.train_iterator = get_batch_iterator(**data_iterator_kwargs, split='train', n_epochs=config.n_epochs, n_examples=config.n_examples, batch_size=config.batch_size, silent=rank != 0, cache_dir=get_local_dir(config.local_dirs))
         rank0_print(f'Loaded train data iterator')
         self.eval_iterator = get_batch_iterator(**data_iterator_kwargs, split='test', n_examples=config.n_eval_examples, batch_size=config.eval_batch_size, silent=rank != 0, cache_dir=get_local_dir(config.local_dirs))
@@ -273,10 +277,12 @@ class BasicTrainer(object):
     def train(self):
         """Begin either SFT or DPO training, with periodic evaluation."""
 
+        # Optimizer and learning scheduler
         rank0_print(f'Using {self.config.optimizer} optimizer')
         self.optimizer = getattr(torch.optim, self.config.optimizer)(self.policy.parameters(), lr=self.config.lr)
         self.scheduler = torch.optim.lr_scheduler.LambdaLR(self.optimizer, lr_lambda=lambda step: min(1.0, (step + 1) / (self.config.warmup_steps + 1)))
     
+        # Random seeds
         torch.manual_seed(self.seed)
         np.random.seed(self.seed)
         random.seed(self.seed)
@@ -331,6 +337,7 @@ class BasicTrainer(object):
 
                 mean_eval_metrics = {k: sum(v) / len(v) for k, v in all_eval_metrics.items()}
                 rank0_print(f'eval after {self.example_counter}: {formatted_dict(mean_eval_metrics)}')
+                
                 if self.config.sample_during_eval:                    
                     rank0_print(json.dumps(all_policy_samples[:10], indent=2))
                     if self.config.loss.name in {'dpo', 'ipo'}:
@@ -357,6 +364,7 @@ class BasicTrainer(object):
             self.policy.train()
 
             start_time = time.time()
+            # Calculating metrics
             batch_metrics = defaultdict(list)
             for microbatch_idx in range(self.config.gradient_accumulation_steps):
                 global_microbatch = slice_and_move_batch_for_device(batch, microbatch_idx, self.config.gradient_accumulation_steps, self.rank)

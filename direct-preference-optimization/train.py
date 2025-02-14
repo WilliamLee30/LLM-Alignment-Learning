@@ -108,9 +108,11 @@ def main(config: DictConfig):
     if 'FSDP' in config.trainer:
         world_size = torch.cuda.device_count()
         print('starting', world_size, 'processes for FSDP training')
+        # Adjusting the File Descriptor Limit
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
         resource.setrlimit(resource.RLIMIT_NOFILE, (hard, hard))
         print(f'setting RLIMIT_NOFILE soft limit to {hard} from {soft}')
+        # Spawning Multiple Processes to run worker_main()and the parent process waits for all child processes to finish before continuing.
         mp.spawn(worker_main, nprocs=world_size, args=(world_size, config, policy, reference_model), join=True)
     else:
         print('starting single-process worker')
