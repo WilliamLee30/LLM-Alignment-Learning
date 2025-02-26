@@ -138,6 +138,7 @@ def concatenated_inputs(batch: Dict[str, Union[List, torch.LongTensor]]) -> Dict
         if k.startswith('rejected') and isinstance(batch[k], torch.Tensor):
             pad_value = -100 if 'labels' in k else 0
             concatenated_key = k.replace('rejected', 'concatenated')
+            # Concatenating chosen and rejected input_ids
             concatenated_batch[concatenated_key] = torch.cat((
                 concatenated_batch[concatenated_key],
                 pad_to_length(batch[k], max_length, pad_value=pad_value),
