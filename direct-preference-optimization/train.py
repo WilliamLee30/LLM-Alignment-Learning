@@ -106,7 +106,8 @@ def main(config: DictConfig):
         print('loaded pre-trained weights')
     
     if 'FSDP' in config.trainer:
-        world_size = torch.cuda.device_count()
+        # world_size = torch.cuda.device_count()
+        world_size = 1
         print('starting', world_size, 'processes for FSDP training')
         # Adjusting the File Descriptor Limit
         soft, hard = resource.getrlimit(resource.RLIMIT_NOFILE)
