@@ -5,7 +5,59 @@
             "created": 1741924291093,
             "text": "MainTopic"
         },
-        "children": []
+        "children": [
+            {
+                "data": {
+                    "id": "d8ftdtov6000",
+                    "created": 1741937712371,
+                    "text": "3.Clipped Surrogate Objective"
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d8fu0iveihk0",
+                            "created": 1741939491198,
+                            "text": "TRP的代理目标是L^CPI，CPI指的是传统的策略迭代，存在的问题是，如果在没有KL散度的约束条件下，直接优化CPI会导致policy的过度更新"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d8fu0jyl2o80",
+                            "created": 1741939493567,
+                            "text": "提出的目标函数是L^CLIP"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d8fu5pchsnk0",
+                                    "created": 1741939897113,
+                                    "text": "其中的第二项限制了概率比在一个由epsilon限制的范围内"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d8fu5pqvbts0",
+                                    "created": 1741939897982,
+                                    "text": "L^CLIP实际上是L^CPI的一个下界"
+                                },
+                                "children": [
+                                    {
+                                        "data": {
+                                            "id": "d8fu98pvl340",
+                                            "created": 1741940174373,
+                                            "text": "通过这种方式，会忽略使得policy变得更好的概率比变化，而会纳入使得policy变差的变化"
+                                        },
+                                        "children": []
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     },
     "template": "default",
     "theme": "fresh-blue",
