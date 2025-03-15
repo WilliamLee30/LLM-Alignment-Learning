@@ -17,7 +17,7 @@
                         "data": {
                             "id": "d8fu0iveihk0",
                             "created": 1741939491198,
-                            "text": "TRP的代理目标是L^CPI，CPI指的是传统的策略迭代，存在的问题是，如果在没有KL散度的约束条件下，直接优化CPI会导致policy的过度更新"
+                            "text": "TRPO的代理目标是L^CPI，CPI指的是传统的策略迭代，存在的问题是，如果在没有KL散度的约束条件下，直接优化CPI会导致policy的过度更新"
                         },
                         "children": []
                     },
@@ -56,10 +56,72 @@
                         ]
                     }
                 ]
+            },
+            {
+                "data": {
+                    "id": "d8gozpbzyao0",
+                    "created": 1742026881305,
+                    "text": "4.Adaptive KL Penalty Coefficient",
+                    "layout_mind_offset": {
+                        "x": 698,
+                        "y": 164
+                    }
+                },
+                "children": [
+                    {
+                        "data": {
+                            "id": "d8gp08ko9g00",
+                            "created": 1742026923188,
+                            "text": "动机：为了提出一个clipped surrogate objective的替代选择，或者是与之结合使用的选择——那就是在KL散度上添加惩罚系数。"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d8gp0929grk0",
+                            "created": 1742026924252,
+                            "text": "实际的效果：这种在KL散度上添加惩罚系数的效果比裁剪代理目标的效果差，但是在这儿作为baseline提出来"
+                        },
+                        "children": []
+                    },
+                    {
+                        "data": {
+                            "id": "d8gp36wi3o00",
+                            "created": 1742027154642,
+                            "text": "具体的算法步骤"
+                        },
+                        "children": [
+                            {
+                                "data": {
+                                    "id": "d8gp3gnilsw0",
+                                    "created": 1742027175867,
+                                    "text": "使用随机梯度下降算法优化L^KLPEN"
+                                },
+                                "children": []
+                            },
+                            {
+                                "data": {
+                                    "id": "d8gp451ef0w0",
+                                    "created": 1742027228949,
+                                    "text": "计算KL散度的期望 d，并且根据d的大小来更新惩罚系数beta"
+                                },
+                                "children": []
+                            }
+                        ]
+                    },
+                    {
+                        "data": {
+                            "id": "d8gp5bjt9200",
+                            "created": 1742027321487,
+                            "text": "算法流程中参数更新的解释：更新d的判断条件中的常数是超参数，但是算法对他们的值并不敏感。而且惩罚系数beta的初始值也不重要，因为过程中它很快就会被调整。"
+                        },
+                        "children": []
+                    }
+                ]
             }
         ]
     },
-    "template": "default",
+    "template": "right",
     "theme": "fresh-blue",
     "version": "1.4.43"
 }
